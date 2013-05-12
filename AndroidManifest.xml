@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="aidvu.android.widget"
+    android:versionCode="5"
+    android:versionName="0.4" >
+
+    <uses-sdk android:minSdkVersion="7"
+        android:targetSdkVersion="7"
+        />
+
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>"
+    
+    <application
+        android:icon="@drawable/quote_widget_icon"
+        android:label="@string/app_name"
+        android:allowBackup="false"
+    >   
+	    <!-- Broadcast Receiver that will process AppWidget Updates --> 
+	    <receiver android:name="aidvu.android.widget.QuoteWidget" android:label="@string/app_name">
+	        <intent-filter>
+	            <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/> 
+	        </intent-filter>
+	        <meta-data android:name="android.appwidget.provider" android:resource="@xml/quote_widget_provider" />
+	    </receiver>
+	    <service android:name=".UpdateWidgetService"></service>   
+    </application>
+    
+</manifest>

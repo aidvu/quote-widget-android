@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Quote Widget</string>
+    <string name="error_fetch_quotes">There was an error getting the quotes. Please try again in a bit.</string>
+    <string name="empty_string"></string>
+
+</resources>
