@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" 
-    android:background="@drawable/appwidget_dark_bg" 
+    android:background="@drawable/dark_bg" 
     android:layout_gravity="center" >
 
     <TextView

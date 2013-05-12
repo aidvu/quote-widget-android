@@ -4,5 +4,5 @@
     android:minHeight="126dp"
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/main"
-    android:previewImage="@drawable/quote_widget_preview"
+    android:previewImage="@drawable/preview"
 /> 
