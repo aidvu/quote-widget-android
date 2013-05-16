@@ -17,7 +17,8 @@
         android:textColor="@android:color/white"
         android:textIsSelectable="false"
         android:textSize="14sp"
-        android:typeface="sans" />
+        android:typeface="sans"
+    />
     
     <TextView
         android:id="@+id/widget_textview_author"
@@ -31,6 +32,7 @@
         android:textIsSelectable="false"
         android:textSize="12sp"
         android:typeface="sans"
+        android:textStyle="italic"
     />
 
 </LinearLayout>
