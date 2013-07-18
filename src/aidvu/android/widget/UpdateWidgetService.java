@@ -2,6 +2,7 @@ package aidvu.android.widget;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Calendar;
 import java.util.Random;
 
 import org.apache.http.HttpResponse;
@@ -26,6 +27,9 @@ public class UpdateWidgetService extends Service
 	private static final String url = "http://79.143.179.5:1337/"; 
 	private static int order = new Random().nextInt(4);
 	
+	private static JSONArray quotes;
+	private static String date = "0000-00-00";
+			
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
@@ -52,32 +56,35 @@ public class UpdateWidgetService extends Service
 		{
 			try
 			{
-				// Create a new HTTP Client
-				DefaultHttpClient defaultClient = new DefaultHttpClient();
-				// Setup the get request
-				HttpGet httpGetRequest = new HttpGet(url);
-		
-				// Execute the request in the client
-				HttpResponse httpResponse = defaultClient.execute(httpGetRequest);
-				// Grab the response
-				BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"));
-				String json = "";
-				String line;
-				while ((line = reader.readLine()) != null)
-				{
-					json += line;
+				if (quotes == null && date != getDate()) {
+					// Create a new HTTP Client
+					DefaultHttpClient defaultClient = new DefaultHttpClient();
+					// Setup the get request
+					HttpGet httpGetRequest = new HttpGet(url);
+
+					// Execute the request in the client
+					HttpResponse httpResponse = defaultClient.execute(httpGetRequest);
+					// Grab the response
+					BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"));
+					String json = "";
+					String line;
+					while ((line = reader.readLine()) != null)
+					{
+						json += line;
+					}
+
+					// Instantiate a JSON object from the request response
+					quotes = new JSONArray(json);
+					date = getDate();
 				}
-
-				// Instantiate a JSON object from the request response
-				JSONArray jsonArray = new JSONArray(json);
-
-				JSONObject jsonObject = jsonArray.getJSONObject(order);
+				
+				JSONObject jsonObject = quotes.getJSONObject(order);
 				
 				// Pick the quote without the quotes
 				remoteViews.setTextViewText(R.id.widget_textview_quote, jsonObject.getString("quote").substring(1, jsonObject.getString("quote").length() - 1));
 				// Pick the author
 				remoteViews.setTextViewText(R.id.widget_textview_author, jsonObject.getString("author"));
-				
+
 				order = (order + 1) % 4;
 
 				// Update the widget
@@ -104,5 +111,18 @@ public class UpdateWidgetService extends Service
 	public IBinder onBind(Intent intent)
 	{
 		return null;
+	}
+	
+	/**
+	 * Returns current date
+	 * 
+	 * @return {@link String} Current date in format 'yyyy-mm-dd'
+	 */
+	private String getDate() {
+		Calendar c = Calendar.getInstance();
+
+		return c.get(Calendar.YEAR) + "-"
+				+ c.get(Calendar.MONTH) + "-"
+				+ c.get(Calendar.DAY_OF_MONTH);
 	}
 }

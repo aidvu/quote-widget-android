@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="aidvu.android.widget"
-    android:versionCode="8"
-    android:versionName="1" >
+    android:versionCode="9"
+    android:versionName="1.1" >
 
     <uses-sdk android:minSdkVersion="7"
         android:targetSdkVersion="7"
@@ -14,7 +14,7 @@
         android:icon="@drawable/quote_widget_icon"
         android:label="@string/app_name"
         android:allowBackup="false"
-    >   
+    >
 	    <!-- Broadcast Receiver that will process AppWidget Updates --> 
 	    <receiver android:name="aidvu.android.widget.QuoteWidget" android:label="@string/app_name">
 	        <intent-filter>
