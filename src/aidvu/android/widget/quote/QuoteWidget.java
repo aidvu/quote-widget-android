@@ -1,4 +1,4 @@
-package aidvu.android.widget;
+package aidvu.android.widget.quote;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -10,7 +10,7 @@ import android.util.Log;
 public class QuoteWidget extends AppWidgetProvider
 {
 
-	private static final String LOG = "aidvu.android.widget.QuoteWidget";
+	public static final String LOG = "aidvu.android.widget.quote.QuoteWidget";
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
@@ -28,5 +28,4 @@ public class QuoteWidget extends AppWidgetProvider
 		// Update the widgets via the service
 		context.startService(intent);
 	}
-
 }

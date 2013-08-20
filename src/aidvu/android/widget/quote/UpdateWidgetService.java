@@ -1,19 +1,23 @@
-package aidvu.android.widget;
+package aidvu.android.widget.quote;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Calendar;
-import java.util.Random;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
@@ -22,18 +26,14 @@ import android.widget.RemoteViews;
 public class UpdateWidgetService extends Service
 {
 
-	private static final String LOG = "aidvu.android.widget.QuoteWidget";
-	
-	private static final String url = "http://79.143.179.5:1337/"; 
-	private static int order = new Random().nextInt(4);
-	
-	private static JSONArray quotes;
-	private static String date = "0000-00-00";
-			
+	private static final String url = "http://codeden.net:1337/"; 
+
+	private static final String fileName = "quote_cache";
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
-		Log.i(LOG, "onStartCommand method called");
+		Log.i(QuoteWidget.LOG, "onStartCommand method called");
 		
 		super.onStartCommand(intent, flags, startId);
 		
@@ -52,64 +52,98 @@ public class UpdateWidgetService extends Service
 		remoteViews.setOnClickPendingIntent(R.id.widget_textview_quote, pendingIntent);
 		remoteViews.setOnClickPendingIntent(R.id.widget_textview_author, pendingIntent);
 		
-		for (int widgetId : allWidgetIds)
-		{
-			try
-			{
-				if (quotes == null && date != getDate()) {
+		for (int widgetId : allWidgetIds) {
+			try {
+				Quotes quotes = loadQuotes();
+
+				// Check if we should update the quotes
+				if (quotes == null || !quotes.getDate().equals(getCurrentDate())) {
 					// Create a new HTTP Client
 					DefaultHttpClient defaultClient = new DefaultHttpClient();
 					// Setup the get request
 					HttpGet httpGetRequest = new HttpGet(url);
-
+	
 					// Execute the request in the client
 					HttpResponse httpResponse = defaultClient.execute(httpGetRequest);
 					// Grab the response
 					BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"));
 					String json = "";
 					String line;
-					while ((line = reader.readLine()) != null)
-					{
+					while ((line = reader.readLine()) != null) {
 						json += line;
 					}
 
-					// Instantiate a JSON object from the request response
-					quotes = new JSONArray(json);
-					date = getDate();
+					JSONArray quotesJsonArray = new JSONArray(json);
+					String currentDate = getCurrentDate();
+					
+					if (quotes == null) {
+						quotes = new Quotes();	
+					}
+					
+					quotes.setDate(currentDate);
+					quotes.setQuotes(quotesJsonArray);
 				}
 				
-				JSONObject jsonObject = quotes.getJSONObject(order);
-				
-				// Pick the quote without the quotes
-				remoteViews.setTextViewText(R.id.widget_textview_quote, jsonObject.getString("quote").substring(1, jsonObject.getString("quote").length() - 1));
-				// Pick the author
-				remoteViews.setTextViewText(R.id.widget_textview_author, jsonObject.getString("author"));
+				Quote quote = quotes.getNextQuote();
 
-				order = (order + 1) % 4;
+				saveQuotes(quotes);
+
+				// Pick the quote without the quotes
+				remoteViews.setTextViewText(R.id.widget_textview_quote, quote.getQuote());
+				// Pick the author
+				remoteViews.setTextViewText(R.id.widget_textview_author, quote.getAuthor());
 
 				// Update the widget
 				appWidgetManager.updateAppWidget(widgetId, remoteViews);
-			}
-			catch(Exception e)
-			{
-				Log.e(LOG, "Error fetching quotes");
+			} catch(Exception e) {
+				Log.e(QuoteWidget.LOG, "Error fetching quotes");
 				e.printStackTrace();
 				
-				// Display an error message
 				remoteViews.setTextViewText(R.id.widget_textview_quote, getString(R.string.error_fetch_quotes));
-				// Blank the author
-				remoteViews.setTextViewText(R.id.widget_textview_author, getString(R.string.empty_string));
+				remoteViews.setTextViewText(R.id.widget_textview_author, getString(R.string.author));
 			}
 		}
-
+		
 		stopSelf();
 
 		return START_STICKY;
 	}
+	
+	private Quotes loadQuotes() {
+		try {
+			File file = this.getFileStreamPath(fileName);
+			if (file.exists()) {
+				FileInputStream fis = this.openFileInput(fileName);
+				ObjectInputStream is = new ObjectInputStream(fis);
+				Quotes quotes = (Quotes) is.readObject();
+				is.close();
+				
+				return quotes;
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			Log.e(QuoteWidget.LOG, "Error loading quotes from cache");
+			e.printStackTrace();
 
+			return null;
+		}
+	}
+	
+	private void saveQuotes(Quotes quotes) {
+		try {
+			FileOutputStream fos = this.openFileOutput(fileName, Context.MODE_PRIVATE);
+			ObjectOutputStream os = new ObjectOutputStream(fos);
+			os.writeObject(quotes);
+			os.close();
+		} catch (Exception e) {
+			Log.e(QuoteWidget.LOG, "Error saving quotes to cache");
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
-	public IBinder onBind(Intent intent)
-	{
+	public IBinder onBind(Intent intent) {
 		return null;
 	}
 	
@@ -118,7 +152,7 @@ public class UpdateWidgetService extends Service
 	 * 
 	 * @return {@link String} Current date in format 'yyyy-mm-dd'
 	 */
-	private String getDate() {
+	private String getCurrentDate() {
 		Calendar c = Calendar.getInstance();
 
 		return c.get(Calendar.YEAR) + "-"

@@ -3,6 +3,7 @@
 
     <string name="app_name">Quote Widget</string>
     <string name="error_fetch_quotes">There was an error getting the quotes. Please try again in a bit.</string>
-    <string name="empty_string"></string>
+    <string name="author">Quote Widget</string>
+    <string name="startin_quotes">If no quotes have loaded yet, click me, but be sure to have internet connection.</string>
 
 </resources>

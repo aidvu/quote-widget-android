@@ -14,25 +14,25 @@
         android:layout_weight="1"
         android:gravity="left"
         android:padding="10dp"
+        android:text="@string/startin_quotes"
         android:textColor="@android:color/white"
         android:textIsSelectable="false"
         android:textSize="14sp"
-        android:typeface="sans"
-    />
+        android:typeface="sans" />
     
     <TextView
         android:id="@+id/widget_textview_author"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
         android:layout_marginBottom="10dp"
         android:gravity="left"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/author"
         android:textColor="@android:color/white"
         android:textIsSelectable="false"
         android:textSize="12sp"
-        android:typeface="sans"
         android:textStyle="italic"
-    />
+        android:typeface="sans" />
 
 </LinearLayout>
