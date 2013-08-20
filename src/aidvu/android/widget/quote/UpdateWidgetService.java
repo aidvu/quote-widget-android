@@ -109,6 +109,11 @@ public class UpdateWidgetService extends Service
 		return START_STICKY;
 	}
 	
+	/**
+	 * Deserializes Quotes class from file and returns it
+	 * 
+	 * @return {@link Quotes} Cached quotes
+	 */
 	private Quotes loadQuotes() {
 		try {
 			File file = this.getFileStreamPath(fileName);
@@ -130,6 +135,11 @@ public class UpdateWidgetService extends Service
 		}
 	}
 	
+	/**
+	 * Serializes Quotes class and caches it in a file
+	 * 
+	 * @param quotes {@link Quotes} to be saved to a file
+	 */
 	private void saveQuotes(Quotes quotes) {
 		try {
 			FileOutputStream fos = this.openFileOutput(fileName, Context.MODE_PRIVATE);
@@ -140,11 +150,6 @@ public class UpdateWidgetService extends Service
 			Log.e(QuoteWidget.LOG, "Error saving quotes to cache");
 			e.printStackTrace();
 		}
-	}
-	
-	@Override
-	public IBinder onBind(Intent intent) {
-		return null;
 	}
 	
 	/**
@@ -158,5 +163,10 @@ public class UpdateWidgetService extends Service
 		return c.get(Calendar.YEAR) + "-"
 				+ c.get(Calendar.MONTH) + "-"
 				+ c.get(Calendar.DAY_OF_MONTH);
+	}
+	
+	@Override
+	public IBinder onBind(Intent intent) {
+		return null;
 	}
 }

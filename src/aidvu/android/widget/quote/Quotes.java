@@ -18,7 +18,8 @@ public class Quotes implements Serializable {
 	
 	private String date;
 	private List<Quote> quotes;
-	private int order = new Random().nextInt(4);
+	private int quotesNumber = 4;
+	private int order = new Random().nextInt(quotesNumber);
 	
 	public Quotes() {}
 	
@@ -49,7 +50,7 @@ public class Quotes implements Serializable {
 	 */
 	public Quote getNextQuote() {
 		Quote quote = quotes.get(order);
-		order = (order + 1) % 4;
+		order = (order + 1) % quotesNumber;
 		return quote;
 	}
 
