@@ -10,7 +10,7 @@ import android.util.Log;
 public class QuoteWidget extends AppWidgetProvider
 {
 
-	public static final String LOG = "aidvu.android.widget.quote.QuoteWidget";
+	public static final String LOG = "aidvu.android.widget.QuoteWidget";
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)

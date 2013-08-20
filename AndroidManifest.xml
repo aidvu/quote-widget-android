@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="aidvu.android.widget.quote"
+    package="aidvu.android.widget"
     android:versionCode="10"
     android:versionName="1.2" >
 
@@ -16,7 +16,7 @@
         android:allowBackup="false"
     >
 	    <!-- Broadcast Receiver that will process AppWidget Updates --> 
-	    <receiver android:name="aidvu.android.widget.quote.QuoteWidget" android:label="@string/app_name">
+	    <receiver android:name="aidvu.android.widget.QuoteWidget" android:label="@string/app_name">
 	        <intent-filter>
 	            <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/> 
 	        </intent-filter>
