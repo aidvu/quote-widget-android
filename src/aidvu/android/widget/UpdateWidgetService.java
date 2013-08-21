@@ -1,4 +1,4 @@
-package aidvu.android.widget.quote;
+package aidvu.android.widget;
 
 import java.io.BufferedReader;
 import java.io.File;
